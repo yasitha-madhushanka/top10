@@ -14,13 +14,67 @@
             height: 100%; 
             border: none;
         }
+        
+        /* Popup URL Widget for Blogger */
+        #popup-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: #222;
+            border: 2px solid #ba63c6;
+            z-index: 1000;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #popup-panel iframe {
+            width: 100%;
+            height: 90%;
+            border: none;
+        }
+
+        #popup-panel .close-btn {
+            background: #ba63c6;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+        }
+
+        #countdown {
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            color: #fff;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
     <iframe id="continentFrame" src="" frameborder="0"></iframe>
+    
+    <!-- Popup URL Widget -->
+    <div id="popup-panel">
+        <span id="countdown">9</span>
+        <button class="close-btn" id="close-btn" onclick="closePopup()">✖</button>
+        <iframe 
+            id="popup-iframe" 
+            src="https://www.effectiveratecpm.com/m2x6hz2fy?key=f3a141db38ea1a2029c2217fc6e98f4b"
+            onerror="handleIframeError()"
+        ></iframe>
+    </div>
 
     <script>
-        // Step 1: Fetch user's continent using IP Geolocation API
+        // Main continent detection and loading
         async function detectContinent() {
             try {
                 const response = await fetch("https://ipapi.co/json/");
@@ -31,7 +85,6 @@
             }
         }
 
-        // Step 2: Load website based on continent
         function loadWebsite(continentCode) {
             const continentMap = {
                 "AS": "https://mostbeautifulgirl10.blogspot.com/2025/03/asian-countries-beautiful-women.html",
@@ -47,7 +100,34 @@
             document.getElementById("continentFrame").src = continentMap[continentCode] || continentMap["FALLBACK"];
         }
 
-        // Automatically enter fullscreen on load
+        // Popup widget functionality
+        setTimeout(() => {
+            document.getElementById('popup-panel').style.display = 'block';
+            let countdown = 9;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('countdown').innerText = countdown;
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('close-btn').style.display = 'block';
+                    document.getElementById('countdown').style.display = 'none';
+                }
+            }, 1000);
+        }, 2000);
+
+        function closePopup() {
+            document.getElementById('popup-panel').style.display = 'none';
+            document.getElementById('popup-iframe').src = '';
+            window.open('https://www.effectiveratecpm.com/smaq263982?key=fa742dceed6cc3655c9079383e90d0d0', '_blank');
+        }
+
+        function handleIframeError() {
+            console.warn('Iframe failed to load — opening in a new tab');
+            window.open('https://www.effectiveratecpm.com/smaq263982?key=fa742dceed6cc3655c9079383e90d0d0', '_blank');
+            closePopup();
+        }
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             detectContinent();
             document.getElementById('continentFrame').requestFullscreen().catch(e => {});
